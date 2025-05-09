@@ -281,6 +281,7 @@ def main():
                     break
                 else:
                     print("Invalid choice!")
+                    #test
 
 # customer operations
         else:
