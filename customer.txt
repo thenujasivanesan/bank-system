@@ -1,0 +1,5 @@
+C001,thenuja,jaffna,14000.0
+C002,mikasa,jaffna,180000.0
+C003,luna,jaffna,3995000.0
+C004,ranjana,jaffna,5000000.0
+C005,eren,paradise island,40000.0
