@@ -269,7 +269,7 @@ def transfer_money():
 
     #performing transfer 
     from_new_balance = from_customer['balance'] - amount
-    to_new-balance = to_customer['balance'] + amount
+    to_new_balance = to_customer['balance'] + amount
 
     update_balance(from_acc, from_new_balance)
     update_balance(to_acc, to_new_balance)
