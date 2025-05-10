@@ -1,5 +1,5 @@
 # setting admin login information
-admin_username = "admin"        # this is hardcoded for admin only
+admin_username = "admin"       
 admin_password = "admin123"
 
 # file names that are used to store customer, user, transaction informations
@@ -8,15 +8,15 @@ users_file = "user.txt"
 transactions_file = "transaction.txt"
 
 # dictionary that holds customer information
-customers_dict = {}     # during the program run this will store the customer info
+customers_dict = {}    
 
 # creating the customers file if it doesnt exist
 def create_customers_file():
     try:
-        with open(customers_file, 'r') as file: # this reads the file to know if that file already exists
+        with open(customers_file, 'r') as file:
             pass
     except FileNotFoundError:
-        with open(customers_file, 'w') as file: # this creates that file 
+        with open(customers_file, 'w') as file: 
             pass
 
 # creatning the users file if it doesnt exist
@@ -38,7 +38,7 @@ def create_transactions_file():
             pass
 
 #loading all customers into dictionary 
-def load_customers():           # when the program starts this will load customers into the dictionary
+def load_customers():      
     global customers_dict
     with open(customers_file, 'r') as file:
         for line in file:
@@ -72,7 +72,7 @@ def get_customers_id():
             return next_id
         
         else:
-            return "C001"  # this line makes the count start from C001 if it doesnt already exist
+            return "C001"  
 
 # printing admin menu options
 def admin_menu():
@@ -82,7 +82,8 @@ def admin_menu():
     print("3. Withdraw Money")
     print("4. Check Balance")
     print("5. Transaction History")
-    print("6. Exit")
+    print("6. Transfer Money")
+    print("7. Exit")
 
 # printing customer menu options
 def customer_menu():
@@ -91,7 +92,8 @@ def customer_menu():
     print("2. Withdraw Money")
     print("3. Check Balance")
     print("4. Transaction History")
-    print("5. Exit")
+    print("5. Transfer Money")
+    print("6. Exit")
 
 # login function for both admin and customers
 def login():
@@ -123,7 +125,7 @@ def create_customer():
     name = input("Enter customer name: ")
     username = input("Enter Customer Username: ")
 
-    with open(users_file, 'r') as file:     # this will check if the username already exists
+    with open(users_file, 'r') as file:  
         lines = file.readlines()
         for line in lines:
             if line.strip().split(',')[1] == username:
@@ -233,6 +235,52 @@ def view_history(account_number):
     if not found:
         print("No transactions found.")
 
+
+# transfering money between two accounts
+def transfer_money():
+    print("\nMoney Transfer")
+    from_acc = input("Enter source account number:").strip()
+    to_acc = input("Enter destination account number:").strip()
+
+    if from_acc == to_acc:
+        print("Cannot tranfer to the same account")
+        return
+
+    from_customer = find_customer(from_acc)
+    to_customer = find_customer(to_acc)
+
+    if not from_customer or not to_customer:
+        print("one or both accounts not found")
+        return
+
+    print(f"Source account balance: {from_customer['balance']}")
+    
+    amount = input("Enter tranfer amount:")
+
+    if not amount.isdigit() or float(amount) <= 0:
+        print("Invalid amount")
+        return
+
+    amount = float(amount)
+
+    if amount > from_customer['balance']:
+        print("Insufficient funds")
+        return
+
+    #performing transfer 
+    from_new_balance = from_customer['balance'] - amount
+    to_new-balance = to_customer['balance'] + amount
+
+    update_balance(from_acc, from_new_balance)
+    update_balance(to_acc, to_new_balance)
+
+    #recording transaction
+    record_transaction(from_acc, "TRANSFER_OUT", amount)
+    record_transaction(to_acc, "TRANSFER_IN", amount)
+
+    print(f"Transfer successful. New balance: {from_new_balance}")
+
+
 # main program starts here 
 def main():
     create_users_file()
@@ -277,12 +325,14 @@ def main():
                     acc_num = input("Enter Account Number: ")
                     view_history(acc_num)
                 elif choice == '6':
-                    print("Exiting admin menu...")
+                    transfer_money()
+                elif choice == '7':
+                    print("Exiting admin menu")
                     break
                 else:
                     print("Invalid choice!")
-                    #test
-#test2
+                    
+
 # customer operations
         else:
             while True:
@@ -297,7 +347,9 @@ def main():
                 elif choice == '4':
                     view_history(account_number)
                 elif choice == '5':
-                    print("Exiting customer menu...")
+                    transfer_money()
+                elif choice == '6':
+                    print("Exiting customer menu")
                     break
                 else:
                     print("Invalid choice!")
